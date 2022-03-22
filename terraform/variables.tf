@@ -21,7 +21,7 @@ variable "profile" {
   default = "cx2-2x4"
 }
 variable "image_name" {
-  default = "ubuntu-focal-docker"
+  default = "ubuntu-focal-docker-consul"
 }
 
 variable "image_version" {

@@ -1,11 +1,11 @@
 # if you want to try the docker as your development env:
 # Prerequisite if you want to run TF or CLI:
-#     export IBMCLOUD_API_KEY=<YOURS>  # pragma: allowlist secret
+#     export IBMCLOUD_API_KEY=<YOURS>
 # Run:
-#   docker-compose run iaas-custom-image-ubuntu-focal
+#   docker-compose run iaas-custom-image-ubuntu-focal-consul
 version: "3.3"
 services:
-  iaas-custom-image-ubuntu-focal:
+  iaas-custom-image-ubuntu-focal-consul:
     privileged: true
     build:
       context: .
