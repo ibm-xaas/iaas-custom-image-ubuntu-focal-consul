@@ -1,0 +1,20 @@
+# if you want to try the docker as your development env:
+# Prerequisite if you want to run TF or CLI:
+#     export IBMCLOUD_API_KEY=<YOURS>  # pragma: allowlist secret
+# Run:
+#   docker-compose run iaas-custom-image-ubuntu-focal
+version: "3.3"
+services:
+  iaas-custom-image-ubuntu-focal:
+    privileged: true
+    build:
+      context: .
+    image: ghcr.io/ibm-xaas/dev-env:latest
+    volumes:
+      # For future ssh use in development
+      - ~/.ssh:/home/ubuntu/.ssh:ro
+      - .:/ubuntu-focal
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      IBMCLOUD_API_KEY: "$IBMCLOUD_API_KEY"
+    working_dir: /ubuntu-focal

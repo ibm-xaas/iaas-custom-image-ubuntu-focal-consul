@@ -1,0 +1,42 @@
+---
+- name: play Install Geerlingguy Docker
+  hosts: default
+  become: true
+  vars:
+    docker_edition: "ce"
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: present
+    docker_service_state: started
+    docker_service_enabled: true
+    docker_restart_handler_state: restarted
+    docker_install_compose: true
+    docker_compose_version: "1.26.0"
+    docker_compose_path: /usr/local/bin/docker-compose
+    docker_apt_release_channel: stable
+    docker_apt_arch: amd64
+    docker_apt_repository: "deb [arch={{ docker_apt_arch }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} {{ docker_apt_release_channel }}"
+    docker_apt_ignore_key_error: True
+    docker_apt_gpg_key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    docker_users:
+      - ubuntu
+
+  pre_tasks:
+    - name: Add universe repository for focal
+      apt_repository:
+        repo: deb http://archive.ubuntu.com/ubuntu focal universe
+        state: present
+      when: ansible_distribution_release == 'focal'
+    - name: Install gnupg2
+      apt:
+        name: gnupg2
+        state: present
+        update_cache: yes
+
+  roles:
+    - geerlingguy.docker
+
+- name: play Install the latest goss
+  hosts: default
+  become: true
+  roles:
+    - vantaworks.goss
