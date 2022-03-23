@@ -96,6 +96,7 @@ resource "null_resource" "run_packer" {
 cd ../packer
 ansible-galaxy install geerlingguy.docker
 ansible-galaxy install vantaworks.goss
+ansible-galaxy install fabiocruzcoelho.envoyproxy
 packer version
 packer init ./ubuntu_focal.pkr.hcl
 timeout 60m packer build \
@@ -122,44 +123,43 @@ data "ibm_is_image" "ubuntu-20-04-3-docker" {
   name = local.last_image_name
 }
 
-# resource "ibm_is_instance" "one_from_the_image" {
-#   depends_on = [ibm_is_security_group_rule.ssh]
-#
-#   name      = "${var.prefix}-${var.region}-${random_id.this.hex}-in-from-the-image"
-#   vpc       = ibm_is_vpc.this.id
-#   zone      = data.ibm_is_zones.this.zones[0]
-#   keys      = [ibm_is_ssh_key.this.id]
-#   image     = data.ibm_is_image.ubuntu-20-04-3-docker.id
-#   profile   = var.profile
-#
-#   primary_network_interface {
-#     subnet = ibm_is_subnet.this.id
-#   }
-# }
-#
-# resource ibm_is_floating_ip "one_from_the_image" {
-#   name   = "${var.prefix}-${var.region}-${random_id.this.hex}-ip-from-the-image"
-#   target = ibm_is_instance.one_from_the_image.primary_network_interface[0].id
-# }
-#
-# resource null_resource "ssh_one_from_the_image" {
-#   triggers = {
-#     fip_instance_id = ibm_is_instance.one_from_the_image.id
-#   }
-#
-#   connection {
-#     type = "ssh"
-#     user = "ubuntu"
-#     host = ibm_is_floating_ip.one_from_the_image.address
-#     private_key = local.ssh_key_private
-#     timeout     = "10m"
-#   }
-#   provisioner "remote-exec" {
-#     inline = [
-#       "echo $(uname -a)",
-#       "apt list --installed | grep unattended",
-#       "whereis docker"
-#     ]
-#   }
-# }
-#
+resource "ibm_is_instance" "one_from_the_image" {
+  depends_on = [ibm_is_security_group_rule.ssh]
+
+  name    = "${var.prefix}-${var.region}-${random_id.this.hex}-in-from-the-image"
+  vpc     = ibm_is_vpc.this.id
+  zone    = data.ibm_is_zones.this.zones[0]
+  keys    = [ibm_is_ssh_key.this.id]
+  image   = data.ibm_is_image.ubuntu-20-04-3-docker.id
+  profile = var.profile
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.this.id
+  }
+}
+
+resource "ibm_is_floating_ip" "one_from_the_image" {
+  name   = "${var.prefix}-${var.region}-${random_id.this.hex}-ip-from-the-image"
+  target = ibm_is_instance.one_from_the_image.primary_network_interface[0].id
+}
+
+resource "null_resource" "ssh_one_from_the_image" {
+  triggers = {
+    fip_instance_id = ibm_is_instance.one_from_the_image.id
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = ibm_is_floating_ip.one_from_the_image.address
+    private_key = local.ssh_key_private
+    timeout     = "10m"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo $(uname -a)",
+      "apt list --installed | grep unattended",
+      "whereis docker"
+    ]
+  }
+}
