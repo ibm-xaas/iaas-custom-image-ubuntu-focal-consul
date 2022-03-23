@@ -8,3 +8,5 @@ group:
 package:
   consul:
     installed: true
+  getenvoy-envoy:
+    installed: true
