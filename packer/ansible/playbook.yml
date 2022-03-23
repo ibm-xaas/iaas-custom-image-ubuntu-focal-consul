@@ -67,6 +67,20 @@
   hosts: default
   become: true
   tasks:
-    - name: Install Envoy Proxy
-      include_role:
-        name: envoyproxy
+    - name: Add an Apt signing key, uses whichever key is at the URL
+      apt_key:
+        url: https://deb.dl.getenvoy.io/public/gpg.8115BA8E629CC074.key
+        state: present
+      when: "ansible_os_family|lower == 'debian'"
+
+    - name: Add Debian/Ubuntu Linux repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://deb.dl.getenvoy.io/public/deb/ubuntu {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: true
+      when: "ansible_os_family|lower == 'debian'"
+
+    - name: Install envoy
+      apt:
+        name: getenvoy-envoy
+        state: present

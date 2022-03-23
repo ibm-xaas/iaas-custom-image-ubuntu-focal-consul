@@ -96,7 +96,6 @@ resource "null_resource" "run_packer" {
 cd ../packer
 ansible-galaxy install geerlingguy.docker
 ansible-galaxy install vantaworks.goss
-ansible-galaxy install fabiocruzcoelho.envoyproxy
 packer version
 packer init ./ubuntu_focal.pkr.hcl
 timeout 60m packer build \
