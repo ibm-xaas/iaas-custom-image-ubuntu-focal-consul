@@ -40,3 +40,25 @@
   become: true
   roles:
     - vantaworks.goss
+
+- name: play Install consul
+  hosts: default
+  become: true
+  tasks:
+    - name: Add an Apt signing key, uses whichever key is at the URL
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+      when: "ansible_os_family|lower == 'debian'"
+
+    - name: Add Debian/Ubuntu Linux repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+        update_cache: true
+      when: "ansible_os_family|lower == 'debian'"
+
+    - name: Install consul
+      apt:
+        name: consul
+        state: present
