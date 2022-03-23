@@ -25,7 +25,7 @@ locals {
 
 resource "ibm_is_ssh_key" "this" {
   name       = "${var.prefix}-${var.region}-${random_id.this.hex}-ssh-key"
-  public_key = local.ssh_key_public
+  public_key = trimspace(local.ssh_key_public)
 }
 
 resource "ibm_is_vpc" "this" {
@@ -182,4 +182,12 @@ resource "local_file" "temp_private_key_to_one_from_the_image" {
   ]
   filename = "prv_key"
   content  = local.ssh_key_private
+}
+
+data "ibm_is_images" "list_ubuntu_focal_consul" {
+  depends_on = [
+    ibm_is_instance.one_from_the_image,
+    ibm_is_floating_ip.one_from_the_image
+  ]
+  visibility = "private"
 }
