@@ -157,8 +157,10 @@ resource "null_resource" "ssh_one_from_the_image" {
   provisioner "remote-exec" {
     inline = [
       "echo $(uname -a)",
-      "apt list --installed | grep unattended",
-      "whereis docker"
+      "apt list --installed | egrep '(consul|envoy)'",
+      "whereis docker",
+      "whereis consul",
+      "whereis envoy"
     ]
   }
 }
