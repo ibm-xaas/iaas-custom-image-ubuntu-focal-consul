@@ -77,6 +77,17 @@ resource "ibm_is_security_group_rule" "ssh" {
   }
 }
 
+resource "ibm_is_security_group_rule" "consul_tutorial" {
+  group     = ibm_is_vpc.this.default_security_group
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+
+  tcp {
+    port_min = 8500
+    port_max = 20000
+  }
+}
+
 data "ibm_is_image" "ubuntu-20-04-3" {
   name = "ibm-ubuntu-20-04-3-minimal-amd64-1"
 }
