@@ -11,3 +11,6 @@ docker-compose run packer-ubuntu-focal  ./build_image.sh
 ```
 
 Due to the limitation of the current [packer-plugin-ibmcloud](https://github.com/IBM/packer-plugin-ibmcloud), it's a little difficult to create custom images with multiple regions, that's doable just a little more consideration to be working on. It's good enough for now.
+
+# History
+03/22/22 transferred from the personal org to ibm-xaas
