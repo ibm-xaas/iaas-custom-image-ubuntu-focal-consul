@@ -5,3 +5,8 @@ service:
 group:
   docker:
     exists: true
+package:
+  consul:
+    installed: true
+  getenvoy-envoy:
+    installed: true

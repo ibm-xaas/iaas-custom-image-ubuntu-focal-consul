@@ -5,6 +5,7 @@ ubuntu 20.04 custom image for ibm cloud
 - installed docker & docker-compose
 - goss
 - consul (based on the instruction from [consul getting-started](https://learn.hashicorp.com/tutorials/consul/get-started-install?in=consul/getting-started) )
+- envoy proxy (based on the instruction from [envoyproxy](https://www.envoyproxy.io/docs/envoy/latest/start/install))
 
 ## how to test (create a custom image in us-south region)
 ```
