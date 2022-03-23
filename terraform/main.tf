@@ -175,3 +175,11 @@ resource "null_resource" "ssh_one_from_the_image" {
     ]
   }
 }
+resource "local_file" "temp_private_key_to_one_from_the_image" {
+  depends_on = [
+    ibm_is_instance.one_from_the_image,
+    ibm_is_floating_ip.one_from_the_image
+  ]
+  filename = "prv_key"
+  content  = local.ssh_key_private
+}
