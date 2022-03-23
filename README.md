@@ -1,10 +1,10 @@
-[![pre-commit](https://github.com/syyang-in-cloud/iaas-custom-image-ubuntu-focal-consul/actions/workflows/pre-commit.yaml/badge.svg?branch=main)](https://github.com/syyang-in-cloud/iaas-custom-image-ubuntu-focal-consul/actions/workflows/pre-commit.yaml)
+[![pre-commit](https://github.com/ibm-xaas/iaas-custom-image-ubuntu-focal-consul/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/ibm-xaas/iaas-custom-image-ubuntu-focal-consul/actions/workflows/pre-commit.yaml)
 # iaas-custom-image-ubuntu-focal-consul
 ubuntu 20.04 custom image for ibm cloud
 - removed unattended upgrades
 - installed docker & docker-compose
 - goss
-- consul
+- consul (based on the instruction from [consul getting-started](https://learn.hashicorp.com/tutorials/consul/get-started-install?in=consul/getting-started) )
 
 ## how to test (create a custom image in us-south region)
 ```
