@@ -25,7 +25,7 @@ locals {
 
 resource "ibm_is_ssh_key" "this" {
   name       = "${var.prefix}-${var.region}-${random_id.this.hex}-ssh-key"
-  public_key = local.ssh_key_public
+  public_key = trimspace(local.ssh_key_public)
 }
 
 resource "ibm_is_vpc" "this" {
@@ -74,6 +74,17 @@ resource "ibm_is_security_group_rule" "ssh" {
   tcp {
     port_min = 22
     port_max = 22
+  }
+}
+
+resource "ibm_is_security_group_rule" "consul_tutorial" {
+  group     = ibm_is_vpc.this.default_security_group
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+
+  tcp {
+    port_min = 8500
+    port_max = 20000
   }
 }
 
@@ -163,4 +174,20 @@ resource "null_resource" "ssh_one_from_the_image" {
       "whereis envoy"
     ]
   }
+}
+resource "local_file" "temp_private_key_to_one_from_the_image" {
+  depends_on = [
+    ibm_is_instance.one_from_the_image,
+    ibm_is_floating_ip.one_from_the_image
+  ]
+  filename = "prv_key"
+  content  = local.ssh_key_private
+}
+
+data "ibm_is_images" "list_ubuntu_focal_consul" {
+  depends_on = [
+    ibm_is_instance.one_from_the_image,
+    ibm_is_floating_ip.one_from_the_image
+  ]
+  visibility = "private"
 }
