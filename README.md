@@ -17,4 +17,6 @@ Due to the limitation of the current [packer-plugin-ibmcloud](https://github.com
 
 # History
 03/22/22 transferred from the personal org to ibm-xaas
+
+After creating the image, I've followed the tutorial `Consul on VMs`
 ![image](https://user-images.githubusercontent.com/67604276/160124784-65155720-14a2-4714-8478-99a3404aab00.png)
