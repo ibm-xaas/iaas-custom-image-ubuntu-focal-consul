@@ -77,14 +77,27 @@ resource "ibm_is_security_group_rule" "ssh" {
   }
 }
 
-resource "ibm_is_security_group_rule" "consul_tutorial" {
+# https://www.consul.io/docs/install/ports
+# not for production, just for tutorial purpose
+resource "ibm_is_security_group_rule" "consul_tutorial_tcp" {
   group     = ibm_is_vpc.this.default_security_group
   direction = "inbound"
   remote    = "0.0.0.0/0"
 
   tcp {
-    port_min = 8500
-    port_max = 20000
+    port_min = 8300
+    port_max = 21255
+  }
+}
+
+resource "ibm_is_security_group_rule" "consul_tutorial_udp" {
+  group     = ibm_is_vpc.this.default_security_group
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+
+  udp {
+    port_min = 8300
+    port_max = 21255
   }
 }
 
