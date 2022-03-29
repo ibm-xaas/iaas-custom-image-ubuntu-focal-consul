@@ -58,10 +58,13 @@
         update_cache: true
       when: "ansible_os_family|lower == 'debian'"
 
-    - name: Install consul
+    - name: Install consul and vault
       apt:
-        name: consul
+        name: "{{ item }}"
         state: present
+      loop:
+        - consul
+        - vault
 
 - name: play Install envoy
   hosts: default
