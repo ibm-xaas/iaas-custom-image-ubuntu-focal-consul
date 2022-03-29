@@ -204,3 +204,46 @@ data "ibm_is_images" "list_ubuntu_focal_consul" {
   ]
   visibility = "private"
 }
+
+resource "ibm_is_instance" "two_from_the_image" {
+  depends_on = [ibm_is_security_group_rule.ssh]
+
+  name    = "${var.prefix}-${var.region}-${random_id.this.hex}-in-two-from-the-image"
+  vpc     = ibm_is_vpc.this.id
+  zone    = data.ibm_is_zones.this.zones[0]
+  keys    = [ibm_is_ssh_key.this.id]
+  image   = data.ibm_is_image.ubuntu-20-04-3-docker.id
+  profile = var.profile
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.this.id
+  }
+}
+
+resource "ibm_is_floating_ip" "two_from_the_image" {
+  name   = "${var.prefix}-${var.region}-${random_id.this.hex}-ip-two-from-the-image"
+  target = ibm_is_instance.two_from_the_image.primary_network_interface[0].id
+}
+
+resource "null_resource" "ssh_two_from_the_image" {
+  triggers = {
+    fip_instance_id = ibm_is_instance.two_from_the_image.id
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = ibm_is_floating_ip.two_from_the_image.address
+    private_key = local.ssh_key_private
+    timeout     = "10m"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "echo $(uname -a)",
+      "apt list --installed | egrep '(consul|envoy)'",
+      "whereis docker",
+      "whereis consul",
+      "whereis envoy"
+    ]
+  }
+}
