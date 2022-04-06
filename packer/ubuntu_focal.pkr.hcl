@@ -2,7 +2,7 @@
 packer {
   required_plugins {
     ibmcloud = {
-      version = ">=v2.1.0"
+      version = ">=v2.2.0"
       source  = "github.com/IBM/ibmcloud"
     }
   }
@@ -20,9 +20,9 @@ variable "subnet_id" {
 	type = string
 }
 
-variable "security_group_id" {
-	type = string
-}
+#variable "security_group_id" {
+#	type = string
+#}
 
 variable "resource_group_id" {
 	type = string
@@ -58,7 +58,7 @@ source "ibmcloud-vpc" "ubuntu-focal" {
 
   subnet_id         = var.subnet_id
   resource_group_id = var.resource_group_id
-  security_group_id = var.security_group_id
+  #security_group_id = var.security_group_id
 
   vsi_base_image_name = var.vsi_base_image_name
   vsi_profile         = var.vsi_profile

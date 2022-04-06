@@ -125,7 +125,6 @@ packer init ./ubuntu_focal.pkr.hcl
 timeout 60m packer build \
 -var region=${var.region} \
 -var subnet_id=${ibm_is_subnet.this.id} \
--var security_group_id=${ibm_is_vpc.this.default_security_group} \
 -var resource_group_id=${data.ibm_resource_group.this.id} \
 -var vsi_base_image_name=${data.ibm_is_image.ubuntu-20-04-3.name} \
 -var vsi_profile=${var.profile} \
