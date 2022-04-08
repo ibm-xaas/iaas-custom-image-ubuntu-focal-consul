@@ -25,7 +25,12 @@ locals {
 
 resource "ibm_is_ssh_key" "this" {
   name       = "${var.prefix}-${var.region}-${random_id.this.hex}-ssh-key"
-  public_key = trimspace(local.ssh_key_public)
+  public_key = local.ssh_key_public
+  lifecycle {
+    ignore_changes = [
+      public_key,
+    ]
+  }
 }
 
 resource "ibm_is_vpc" "this" {
