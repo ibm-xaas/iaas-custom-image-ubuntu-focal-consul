@@ -85,6 +85,9 @@ build {
     ui = true
     bubble_text = true
   }
+  provisioner "shell" {
+    script = var.vsi_user_data_file
+  }
   provisioner "ansible" {
     playbook_file = var.ansible_file
   }
