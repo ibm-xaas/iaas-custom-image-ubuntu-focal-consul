@@ -280,3 +280,66 @@ envoy  version: d362e791eb9e4efa8d87f6d878740e72dc8330ac/1.18.2/clean-getenvoy-7
 
 ubuntu@prefix-us-south-972d-in-from-the-image:~$
 ```
+
+# service and consul config
+
+```
+ubuntu@prefix-us-south-70a9-in-from-the-image:~$ cat /etc/systemd/system/consul.service
+[Unit]
+Description="HashiCorp Consul - A service mesh solution"
+Documentation=https://www.consul.io/
+Wants=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+
+[Service]
+EnvironmentFile=-/etc/consul.d/consul.env
+User=consul
+Group=consul
+ExecStart=/usr/bin/consul agent -config-file=/etc/consul.d/consul.hcl
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+ubuntu@prefix-us-south-70a9-in-from-the-image:~$ cat /etc/consul.d/consul-vm.hcl
+data_dir = "/tmp/consul/server"
+
+server           = true
+bootstrap_expect = 1
+advertise_addr   = "52.118.149.52"
+client_addr      = "0.0.0.0"
+bind_addr        = "0.0.0.0"
+
+ports {
+  grpc = 8502
+}
+
+enable_central_service_config = true
+
+ui_config {
+  enabled          = true
+}
+
+connect {
+  enabled = true
+}
+
+datacenter = "dc1"
+
+
+config_entries {
+  bootstrap = [
+    {
+      kind = "proxy-defaults"
+      name = "global"
+    }
+  ]
+}
+
+
+ubuntu@prefix-us-south-70a9-in-from-the-image:~$ß
+```
